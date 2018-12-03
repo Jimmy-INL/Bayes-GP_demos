@@ -62,8 +62,8 @@ def latin_cube(n,d,plot_=False):
     # d is the number of factors
     # full factorial design is when the number of levels = number of factor
     o=[]
-    x=np.arange(n)
-    a=set(np.random.permutations(x))
+    #x=np.arange(n)
+    #a=set(np.random.permutations(x))
     #R=np.array(list(a))[np.random.choice(n,d),:].transpose()
     R=[[]]*d
     #R=np.random.permutation(n).reshape(n,1)
