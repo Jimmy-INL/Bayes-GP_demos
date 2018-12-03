@@ -7,6 +7,8 @@ import numpy as np
 import basisfuncs
 from scipy import optimize
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 #%matplotlib notebook
 
 class gpprocess():
@@ -42,7 +44,7 @@ class gpprocess():
         self.sigma2=1/float(R.shape[0])*np.dot(np.dot((self.ytrain-self.mu).transpose(),Rinv),(self.ytrain-self.mu))
         self.model=np.linalg.solve(R,(self.ytrain-self.mu)) #just like the interpolation scheme
 
-    def optimize(self):
+    def optimize(self,plot_=False):
         """
         Maximizing parameters based on training data only
         """
@@ -60,14 +62,15 @@ class gpprocess():
         ltest=np.linspace(0.001,0.35,100)
         for i in ltest:
             lval.append(-self.logliklihood(i)) #we minimize the negative log-liklihood using built-in
-        plt.close('all')
-        fig6=plt.figure()
-        ax6=fig6.add_subplot(111)
-        ax6.set_xlabel('Hyperparameter value')
-        ax6.set_ylabel('log-liklihood')
-        ax6.plot(ltest,lval)
-        plt.show(fig6)
-        return(fig6)
+        if plot_:
+            plt.close('all')
+            fig6=plt.figure()
+            ax6=fig6.add_subplot(111)
+            ax6.set_xlabel('Hyperparameter value')
+            ax6.set_ylabel('log-liklihood')
+            ax6.plot(ltest,lval)
+            plt.show(fig6)
+            return(fig6)
 
     def logliklihood(self,l):
         liklifeat=basisfuncs.rbf(l,self.xtrain)
@@ -106,10 +109,12 @@ class gpprocess():
         #plt.show(fig4)
         return(fig4)
 
-    def plot_surf(self):
-        n=15
+    def plot_surf(self,n):
+        #n=20
         XX1,XX2=np.meshgrid(np.arange(n),np.arange(n))
-        xtest=np.hstack(XX1.reshape(n**2,1),XX2.reshape(n**2,1))
+        XX1=XX1/np.max(XX1)
+        XX2=XX2/np.max(XX2)
+        xtest=np.hstack((XX1.reshape(n**2,1),XX2.reshape(n**2,1)))
         fstar,var=self.eval(xtest)
 
         se=2*np.sqrt(var.reshape((np.max(var.shape),1)))
@@ -120,15 +125,16 @@ class gpprocess():
         #x_range=np.vstack((xvect.max(),xvect.min()))
 
         fig4=plt.figure()
-        ax4=fig4.add_subplot(111)
+        ax4=fig4.gca(projection='3d')
         surf=ax4.plot_surface(xtest[:,0].reshape(n,n),xtest[:,1].reshape(n,n),fstar.reshape(n,n),cmap=cm.coolwarm,linewidth=0, antialiased=False)
-        ax4.set_title('dim-1,dim-2 latin cube random design')
+        ax4.set_title('f(x1,x2): Prediction')
         ax4.set_xlabel('x1')
         ax4.set_ylabel('x2')
         ax4.set_zlabel('y')
         ax4.set_zlim((0,1.4))
         ax4.set_ylim((0,1))
         ax4.set_xlim((0,1))
+        fig4.colorbar(surf, shrink=0.5, aspect=5)
         #ax4.scatter(self.xtrain,self.ytrain,marker="+",color="b")
         #ax4.plot(xtest,fstar+se,color="r")
         #ax4.plot(xtest,fstar-se,color="r")
