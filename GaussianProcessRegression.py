@@ -28,7 +28,7 @@ class gpprocess():
         self.model=(np.zeros((len(mu),1))) # initialize model
 
     def traindata(self,xtrain,ytrain):
-        self.xtrain=np.atleast_2d(xtrain).reshape((len(xtrain),1))
+        self.xtrain=np.atleast_2d(xtrain)
         self.ytrain=np.atleast_2d(ytrain).reshape((len(ytrain),1))
 
     def trainGP(self):
@@ -57,7 +57,7 @@ class gpprocess():
         print('Training GP')
         self.trainGP()
         lval=[]
-        ltest=np.linspace(0.001,0.05,100)
+        ltest=np.linspace(0.001,0.2,100)
         for i in ltest:
             lval.append(-self.logliklihood(i)) #we minimize the negative log-liklihood using built-in
         plt.close('all')
@@ -103,6 +103,40 @@ class gpprocess():
         bot=fstar-se
         plt.fill_between(xtest[:,0],top[:,0],bot[:,0],color='blue',alpha=0.3)
         plt.legend()
+        #plt.show(fig4)
+        return(fig4)
+
+    def plot_surf(self):
+        n=15
+        XX1,XX2=np.meshgrid(arange(n),arange(n))
+        xtest=np.hstack(XX1.reshape(n**2,1),XX2.reshape(n**2,1))
+        fstar,var=self.eval(xtest)
+
+        se=2*np.sqrt(var.reshape((np.max(var.shape),1)))
+
+        #yvect=np.vstack((self.ytrain,fstar+se,fstar-se))
+        #y_range=np.vstack((yvect.max(),yvect.min()))
+        #xvect=np.vstack((self.xtrain,xtest))
+        #x_range=np.vstack((xvect.max(),xvect.min()))
+
+        fig4=plt.figure()
+        ax4=fig4.add_subplot(111)
+        surf=ax4.plot_surface(xtest[:,0].reshape(n,n),xtest[:,1].reshape(n,n),fstar.reshape(n,n),cmap=cm.coolwarm,linewidth=0, antialiased=False)
+        ax4.set_title('dim-1,dim-2 latin cube random design')
+        ax4.set_xlabel('x1')
+        ax4.set_ylabel('x2')
+        ax4.set_zlabel('y')
+        ax4.set_zlim((0,1.4))
+        ax4.set_ylim((0,1))
+        ax4.set_xlim((0,1))
+        #ax4.scatter(self.xtrain,self.ytrain,marker="+",color="b")
+        #ax4.plot(xtest,fstar+se,color="r")
+        #ax4.plot(xtest,fstar-se,color="r")
+        #ax4.plot(xtest,fstar,color="b")
+        #top=fstar+se
+        #bot=fstar-se
+        #plt.fill_between(xtest[:,0],top[:,0],bot[:,0],color='blue',alpha=0.3)
+        #plt.legend()
         #plt.show(fig4)
         return(fig4)
 

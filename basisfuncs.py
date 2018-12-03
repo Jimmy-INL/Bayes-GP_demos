@@ -16,12 +16,14 @@ def rbf(l,mu):
     mu=np.atleast_2d(mu)
     def RBF_(x):
         #'''dmat=np.zeros((x.shape[0],np.max(xtrain.shape[0])))'''
-        x=np.atleast_2d(x)
-        x=x.reshape((np.max(x.shape),1))
+        x=np.atleast_2d(np.array(x))
+        #x=x.reshape((np.max(x.shape),1))
         dmat=np.zeros((x.shape[0],mu.shape[0]))
         for i in range(len(x)):
             for j in range(len(mu)):
                 #dmat[i,j]=np.exp(-np.square(np.linalg.norm(x[i]-mu[j]))/(2*np.square(l))) ##for multidimensional
-                dmat[i,j]=np.exp(-np.square(x[i,0]-mu[j,0])/(l))
+                #dmat[i,j]=np.exp(-np.square(x[i,0]-mu[j,0])/(l))
+                dmat[i,j]=np.exp(-np.sum(np.square(x[i,:]-mu[j,:]))/(l))
+
         return (dmat)
     return(RBF_)
