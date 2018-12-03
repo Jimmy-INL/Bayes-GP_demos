@@ -57,7 +57,7 @@ class gpprocess():
         print('Training GP')
         self.trainGP()
         lval=[]
-        ltest=np.linspace(0.001,0.2,100)
+        ltest=np.linspace(0.001,0.35,100)
         for i in ltest:
             lval.append(-self.logliklihood(i)) #we minimize the negative log-liklihood using built-in
         plt.close('all')
@@ -108,7 +108,7 @@ class gpprocess():
 
     def plot_surf(self):
         n=15
-        XX1,XX2=np.meshgrid(arange(n),arange(n))
+        XX1,XX2=np.meshgrid(np.arange(n),np.arange(n))
         xtest=np.hstack(XX1.reshape(n**2,1),XX2.reshape(n**2,1))
         fstar,var=self.eval(xtest)
 

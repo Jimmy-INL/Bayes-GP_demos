@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils.extmath import cartesian
-from itertools import permutations
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
@@ -64,7 +63,7 @@ def latin_cube(n,d,plot_=False):
     # full factorial design is when the number of levels = number of factor
     o=[]
     x=np.arange(n)
-    a=set(permutations(x))
+    a=set(np.random.permutation(x))
     #R=np.array(list(a))[np.random.choice(n,d),:].transpose()
     R=[[]]*d
     #R=np.random.permutation(n).reshape(n,1)
@@ -151,8 +150,8 @@ def frankes_func(x,plot_=False):
 
 def parity_plot(ytest,ypred):
     fig5=plt.figure()
-    ax=fig4.add_subplot(111)
-    Y=np.vstack(ytest,ypred)
+    ax=fig5.add_subplot(111)
+    Y=np.vstack((ytest,ypred))
     #fig,ax = plt.subplots()
     ax.scatter(ytest,ypred)
     ax.set_title('Parity Plot')
